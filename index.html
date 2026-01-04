@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <title>行動裝置定位回報系統</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #2563eb;
+      color: white;
+      padding: 16px;
+      text-align: center;
+    }
+    main {
+      max-width: 600px;
+      margin: 30px auto;
+      background: white;
+      padding: 24px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-top: 0;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #1e40af;
+    }
+    .info {
+      margin-top: 20px;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    .log {
+      margin-top: 20px;
+      background: #f1f5f9;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📍 行動裝置定位回報系統</h1>
+  </header>
+
+  <main>
+    <h2>定位回報</h2>
+    <p>點擊下方按鈕，取得目前裝置的位置並回報。</p>
+
+    <button onclick="getLocation()">取得並回報位置</button>
+
+    <div class="info" id="info"></div>
+    <div class="log" id="log"></div>
+  </main>
+
+  <script>
+    function getLocation() {
+      const info = document.getElementById('info');
+      const log = document.getElementById('log');
+
+      if (!navigator.geolocation) {
+        info.innerText = '此瀏覽器不支援定位功能';
+        return;
+      }
+
+      info.innerText = '定位中，請稍候…';
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          const time = new Date().toLocaleString();
+
+          info.innerHTML = `
+            <strong>定位成功</strong><br>
+            緯度：${lat}<br>
+            經度：${lon}<br>
+            時間：${time}
+          `;
+
+          log.innerText += `\n[${time}]\n緯度：${lat}\n經度：${lon}\n--------------------`;
+
+          // 模擬回傳至伺服器（課堂示範用）
+          /*
+          fetch('https://example.com/api/location', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ latitude: lat, longitude: lon, time })
+          });
+          */
+        },
+        (error) => {
+          info.innerText = '定位失敗：' + error.message;
+        }
+      );
+    }
+  </script>
+</body>
+</html>
